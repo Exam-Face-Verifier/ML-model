@@ -9,6 +9,5 @@ def check_face(img1_path,img2_path):
         return result
     except Exception as e:
         print(e)
-        return "Hello"
+        return None
     
-# check_face("images.jpg","q1.jpg")
