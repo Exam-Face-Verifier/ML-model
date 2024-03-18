@@ -26,10 +26,12 @@ def verify():
         result = []
 
         result = check_face("kver_img.png", "ver_img.png")
-
+        
+        if not result["face_found"]:
+            return Response('{"matched":null, "message":"Face not Found. Please retry!"}', status=201, mimetype='application/json')
         if result["verified"]:
-            return Response('{"matched":True}', status=200, mimetype='application/json')
+            return Response('{"matched":True, "message":"Face matched}', status=200, mimetype='application/json')
         else:
-            return Response('{"matched":False}', status=200, mimetype='application/json')
+            return Response('{"matched":False, "message":"Face not matched"}', status=200, mimetype='application/json')
     except Exception as e:
-        return Response('{"matched":null}', status=500, mimetype='application/json')
+        return Response('{"matched":null, "message":"Please retry!"}', status=500, mimetype='application/json')
