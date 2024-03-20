@@ -5,7 +5,7 @@ import cv2
 def get_qr():
     output = subprocess.check_output("ipconfig", shell=True)
     output = output.decode("utf-8")
-    req_ip = "";
+    req_ip = ""
 
 
     for item in output.strip().split("\n"):
@@ -16,7 +16,7 @@ def get_qr():
     generator = barcode.generation.BarcodeGenerator(barcode.generation.EncodeTypes.QR)
     generator.code_text = req_ip
     generator.parameters.barcode.x_dimension.pixels = 8.0
-    generator.parameters.resolution = 500.0
+    generator.parameters.resolution = 512.0
 
     generator.save("Text_QR_Code.jpg")
 
