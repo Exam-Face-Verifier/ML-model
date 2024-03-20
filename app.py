@@ -3,10 +3,13 @@ import json
 import base64
 from model import *
 from qr_generator import get_qr
+from studentDetails import *
 
 app = Flask(__name__)
 get_qr()
 
+firCredentials = credentials.Certificate('serviceAccountKey.json')
+firApp = firebase_admin.initialize_app(firCredentials)
 
 @app.route("/verify", methods=['POST'])
 def verify():
@@ -20,11 +23,12 @@ def verify():
         vfile.write(u_i)
         vfile.close()
 
-        known = data["known_img"]
+        known = StudentDetails[data['Rollno']]
         k_i = base64.decodebytes(known.encode('utf-8'))
         kvfile = open("kver_img.png", "wb")
         kvfile.write(k_i)
         kvfile.close()
+        
         result = []
 
         result = check_face("kver_img.png", "ver_img.png")
