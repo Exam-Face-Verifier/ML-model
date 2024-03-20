@@ -1,23 +1,32 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
-import requests
+import urllib.request
 import os
-from studentDetails import *
-# Initialize Firebase
+
 cred = credentials.Certificate('serviceaccountkey.json')
 firebase_admin.initialize_app(cred)
 db = firestore.client()
-print('-----Connection initialized-----')
 
-# Reference to the collection
 student_details_ref = db.collection('Student_Details')
 
-# Iterate over documents in the collection
+if not os.path.exists('util'):
+    os.mkdir('util')
+    
+def get_imgs(roll_array):
+    error_array = []
+    for r in roll_array:
+        try:
+            student = student_details_ref.document(r).get()
+            student_data = student.to_dict()
+            rollNo = student_data["Student_Rollno"]
+            img_url = student_data["Student_Image"]
+            filename = rollNo + '.jpg'
+            filepath = 'util' + '/' + filename
 
-for doc in student_details_ref.stream():
-    student_data = doc.to_dict()
-    image_data = student_data.get('Student_Image')
-    rollNo = student_data.get('Student_Rollno')
-    StudentDetails[rollNo] = image_data
-
-print(StudentDetails);
+            if not os.path.isfile(filepath):
+                urllib.request.urlretrieve(img_url, filepath)
+        except Exception as e:
+            error_array.append(r)
+        
+    return error_array
+    

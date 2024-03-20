@@ -7,7 +7,6 @@ def get_qr():
     output = output.decode("utf-8")
     req_ip = ""
 
-
     for item in output.strip().split("\n"):
         if "IPv4 Address" in item:
             req_ip = item.strip().split(":")[1].strip()
@@ -18,9 +17,9 @@ def get_qr():
     generator.parameters.barcode.x_dimension.pixels = 8.0
     generator.parameters.resolution = 512.0
 
-    generator.save("Text_QR_Code.jpg")
+    generator.save("temp/Text_QR_Code.jpg")
 
-    img = cv2.imread("Text_QR_Code.jpg")
+    img = cv2.imread("temp/Text_QR_Code.jpg")
     cv2.putText(img, 'Please scan using the app.', (10, 20),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
 
     cv2.imshow("IP QR",img)
