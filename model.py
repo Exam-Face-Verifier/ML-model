@@ -1,21 +1,8 @@
-from deepface import DeepFace
 import cv2
 import numpy as np
 import face_recognition
 import os
 
-def fce(img1_path,img2_path):
-    print('-----model running -----')
-    try:
-        result = DeepFace.verify(img1_path, img2_path)
-        print(result)
-        result["face_found"] = True
-        return result
-    except Exception as e:
-        print(e)
-        result = {"face_found":False}
-        return result
-    
 
 def check_face(img1_path, img2_path):
     encodeList = []
@@ -26,7 +13,7 @@ def check_face(img1_path, img2_path):
         encodeList.append(encode)
     except:
         return {"face_found": False}
-    
+
     cap_path = img1_path
     while True:
         img = cv2.imread(cap_path)
@@ -41,6 +28,12 @@ def check_face(img1_path, img2_path):
             faceDis = face_recognition.face_distance(encodeList, encodeFace)
             matchIndex = np.argmin(faceDis)
             if matches[matchIndex]:
-                return {"face_found": True, "verified":True}
-        return {"face_found": True, "verified":False}
+                return {"face_found": True, "verified": True}
+        return {"face_found": True, "verified": False}
 
+
+def encoder(img_path):
+    img = cv2.imread(img_path)
+    img_feature = face_recognition.face_encodings(
+        img, known_face_locations=None, num_jitters=1, model='small')
+    return img_feature
