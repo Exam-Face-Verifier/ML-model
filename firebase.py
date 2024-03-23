@@ -9,11 +9,10 @@ db = firestore.client()
 
 student_details_ref = db.collection('Student_Details')
 
-
+if not os.path.exists('util'):
+    os.mkdir('util')
     
 def get_imgs(roll_array):
-    if not os.path.exists('util'):
-        os.mkdir('util')
     error_array = []
     for r in roll_array:
         try:

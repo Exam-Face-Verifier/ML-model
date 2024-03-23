@@ -88,13 +88,18 @@ def delete_imgs():
     print(request)
     try:
         if os.path.exists('util'):
-            os.rmdir('util')
+            files = os.listdir('util')
+            for f in files:
+                file_path = os.path.join('util', f)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
         return Response('{"message":"Images deleted successful"}', status=200, mimetype='application/json')
-    except:
+    except Exception as e:
+        print(e)
         return Response('{"message":"Delete Failed"}', status=500, mimetype='application/json')
     
 
-@app.route("/EncodeImage", methods=['POST'])
+@app.route("/encodeImage", methods=['POST'])
 def encode_imgs():
     print(request)
     try:
