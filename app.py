@@ -17,6 +17,7 @@ get_qr()
 
 @app.route("/verify", methods=['POST'])
 def verify():
+    print(request)
     try:
         body = request.data
         data = json.loads(body)
@@ -29,6 +30,12 @@ def verify():
         
         roll_no = data["roll_no"]
         known_path = "util/" + roll_no + ".json"
+        
+        if not os.path.exists('util'):
+            if not os.path.exists(known_path):
+                return Response('{"matched":null, "message":"Please Download image!"}', status=500, mimetype='application/json')
+            return Response('{"matched":null, "message":"Please Download images!"}', status=500, mimetype='application/json')
+        
         f = open(known_path)
         known = json.load(f)
 
@@ -56,10 +63,10 @@ def verify():
     
 @app.route("/uploadList", methods=['POST'])
 def uploadList():
+    print(request)
     try:
         body = request.data
         data = json.loads(body)
-        print("Request Recieved")
         
         roll_list = data["roll_list"]
         failed_list = get_imgs(roll_array=roll_list)
@@ -76,8 +83,9 @@ def uploadList():
         return Response('{"matched":null, "message":"Internal error.Please retry!"}', status=500, mimetype='application/json')
 
 
-@app.route("/DeleteImages", methods=['GET'])
+@app.route("/deleteImages", methods=['GET'])
 def delete_imgs():
+    print(request)
     try:
         if os.path.exists('util'):
             os.rmdir('util')
@@ -88,6 +96,7 @@ def delete_imgs():
 
 @app.route("/EncodeImage", methods=['POST'])
 def encode_imgs():
+    print(request)
     try:
         body = request.data
         data = json.loads(body)
@@ -107,5 +116,4 @@ def encode_imgs():
             return Res_JSON, 200
         
     except Exception as e:
-        print(e)
         return Response('{"message":"Encoding Failed"}', status=500, mimetype='application/json')
