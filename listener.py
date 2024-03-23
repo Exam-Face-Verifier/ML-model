@@ -16,17 +16,17 @@ def get_imgs(roll_array):
     error_array = []
     for r in roll_array:
         try:
+            print("Yes")
             student = student_details_ref.document(r).get()
             student_data = student.to_dict()
             rollNo = student_data["Student_Rollno"]
-            img_url = student_data["Student_Image"]
-            filename = rollNo + '.jpg'
-            filepath = 'util' + '/' + filename
+            url = student_data["Student_Image"]
+            filename = rollNo + '.json'
+            filepath = 'util/' + filename
 
             if not os.path.isfile(filepath):
-                urllib.request.urlretrieve(img_url, filepath)
+                urllib.request.urlretrieve(url, filepath)
         except Exception as e:
-            error_array.append(r)
-        
+            error_array.append(r)        
     return error_array
     

@@ -5,6 +5,7 @@ import os
 from model import *
 from qr_generator import get_qr
 from listener import *
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -27,9 +28,12 @@ def verify():
         vfile.close()
         
         roll_no = data["roll_no"]
-        known_path = "util/" + roll_no + ".jpg"
+        known_path = "util/" + roll_no + ".json"
+        f = open(known_path)
+        known = json.load(f)
 
-        result = check_face(known_path, "temp/ver_img.jpg")
+        result = check_face(known, "temp/ver_img.jpg")
+        f.close()
         
         if not result["face_found"]:
             Res_dict = {'rollno': roll_no, 'matched': None,
@@ -82,7 +86,7 @@ def delete_imgs():
         return Response('{"message":"Delete Failed"}', status=500, mimetype='application/json')
     
 
-@app.route("/EncodeImages", methods=['POST'])
+@app.route("/EncodeImage", methods=['POST'])
 def encode_imgs():
     try:
         body = request.data
@@ -93,12 +97,15 @@ def encode_imgs():
         vfile = open("temp/enc_img.jpg", "wb")
         vfile.write(u_i)
         vfile.close()
-        
         res = encoder("temp/enc_img.jpg")
-        Res_JSON = jsonify(res)
-        print(Res_JSON)
         
-        return Res_JSON, 200
+        if(len(res) == 0):
+            return Response('{"message":"Face not Found"}', status=201, mimetype='application/json')
         
-    except:
+        else:
+            Res_JSON = pd.Series(res).to_json(orient='values')
+            return Res_JSON, 200
+        
+    except Exception as e:
+        print(e)
         return Response('{"message":"Encoding Failed"}', status=500, mimetype='application/json')

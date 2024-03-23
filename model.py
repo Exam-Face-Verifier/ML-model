@@ -4,17 +4,11 @@ import face_recognition
 import os
 
 
-def check_face(img1_path, img2_path):
+def check_face(encode, img2_path):
     encodeList = []
-    curimg = cv2.imread(img2_path)
-    img = cv2.cvtColor(curimg, cv2.COLOR_BGR2RGB)
-    try:
-        encode = face_recognition.face_encodings(img)[0]
-        encodeList.append(encode)
-    except:
-        return {"face_found": False}
+    encodeList.append(encode)
 
-    cap_path = img1_path
+    cap_path = img2_path
     while True:
         img = cv2.imread(cap_path)
         imgS = cv2.resize(img, (0, 0), None, 0.25, 0.25)
